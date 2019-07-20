@@ -23,7 +23,7 @@ public class Function {
         Map<String, String> response = new HashMap<String, String>();
         try {
             Connection con = HikariCpDbSource.getConnection();
-            ResultSet res = con.createStatement().executeQuery("SELECT TOP 10 [BusinessEntityId] as [Id], [FirstName], [LastName] FROM [Person].[Person] Order by [Id]");
+            ResultSet res = con.createStatement().executeQuery("SELECT TOP 100 [BusinessEntityId] as [Id], [FirstName], [LastName] FROM [Person].[Person] Order by [Id]");
             while (res.next()) {
                 String id =  res.getString("Id");
                 String firstName = res.getString("FirstName");
@@ -31,6 +31,7 @@ public class Function {
                 context.getLogger().info(String.format("%s : %s %s", id, firstName, lastName));
                 response.put(id, String.format("%s %s", firstName, lastName));
             }
+            con.close();
         } catch (SQLException e) {
             context.getLogger().log(Level.SEVERE, "error", e);
             return request.createResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR).body("invalid query").build();
